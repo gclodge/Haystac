@@ -13,6 +13,8 @@
 
 The goal of this project is offer an open-source, secured, and configurable STAC solution that is easily extendable to any consumer's use case.
 
+Hay Stack comes in two versions: HaySTAC (this repo) and [HaySTAC enterprise](https://gno-sys.com/technology/haystac/).  HaySTAC Enterprise is a commercial version that includes advanced features such as security, user management, cloud integration, enhanced metadata and search, a graphic browser, auto ingest, etc. 
+
 The project is heavily inspired by the [Clean Architecture](https://github.com/jasontaylordev/CleanArchitecture/tree/net7.0) project template developed by Jason Taylor et al.
 
 ## Technologies
