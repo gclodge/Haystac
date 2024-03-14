@@ -29,12 +29,19 @@ public class Link : ValueObject
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Title { get; set; }
 
-    public static Link GenerateChildLink(Collection collec)
+    /// <summary>
+    /// HTTP method described by the endpoint at the given link
+    /// </summary>
+    [JsonPropertyName("method")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Method { get; set; }
+
+    public static Link GenerateChildLink(Collection collec, string baseUrl)
     {
         return new Link
         {
             Relationship = "child",
-            Href = $"/collections/{collec.Identifier}",
+            Href = $"{baseUrl}/collections/{collec.Identifier}",
             Type = "application/json"
         };
     }

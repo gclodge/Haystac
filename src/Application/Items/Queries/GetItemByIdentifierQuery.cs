@@ -13,10 +13,17 @@ public class GetItemByIdentifierQueryHandler
     : IRequestHandler<GetItemByIdentifierQuery, ItemDto>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IClientService _clients;
+    private readonly ILinkService _links;
 
-    public GetItemByIdentifierQueryHandler(IApplicationDbContext context)
+    public GetItemByIdentifierQueryHandler(
+        IApplicationDbContext context,
+        IClientService clients,
+        ILinkService links)
     {
         _context = context;
+        _clients = clients;
+        _links = links;
     }
 
     public async Task<ItemDto> Handle(GetItemByIdentifierQuery query,
@@ -26,12 +33,19 @@ public class GetItemByIdentifierQueryHandler
                                                .Include(c => c.Items)
                                                .FirstOrDefaultAsync(cancellationToken);
 
-        if (collec == null) throw new NotFoundException(nameof(Collection), query.Collection);
+        var clientId = await _clients.GetClientIdAsync();
+
+        if (collec == null || !await _clients.IsCollectionVisible(collec))
+        {
+            throw new NotFoundException(nameof(Collection), query.Collection);
+        }
 
         var item = collec.Items.FirstOrDefault(i => i.Identifier == query.Identifier);
 
         if (item == null) throw new NotFoundException(nameof(Item), query.Identifier);
 
-        return item.ToDto();
+        var links = await _links.GenerateItemLinks(collec, item);
+
+        return item.ToDto(links);
     }
 }
